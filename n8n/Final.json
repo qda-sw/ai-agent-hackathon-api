@@ -1,0 +1,1759 @@
+{
+  "name": "Final",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -1056,
+        64
+      ],
+      "id": "e813d9fc-d0b2-411f-9de5-9a07ee3fd787",
+      "name": "When chat message received",
+      "webhookId": "48db7c3b-02cb-4253-b00e-bcfc0056c31b"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        192,
+        48
+      ],
+      "id": "0669338c-3145-4ab5-9af0-65315f778301",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "solar-pro2",
+        "options": {}
+      },
+      "type": "n8n-nodes-upstage.lmChatModelUpstage",
+      "typeVersion": 1,
+      "position": [
+        192,
+        320
+      ],
+      "id": "7415bef7-dcd6-4a1a-82a1-2042fd90aa17",
+      "name": "Upstage Solar Chat for Agent",
+      "credentials": {
+        "upstageApi": {
+          "id": "KKoOhTHWBAC6yTp7",
+          "name": "Upstage account 81"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -160,
+        48
+      ],
+      "id": "e627cc36-6cd7-45e4-971d-d533a69870f9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 16
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1072,
+        576
+      ],
+      "id": "cf93c3a7-5e9b-4768-9e8a-685b75808ca7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.x.com/2/users/{{ $json.x_user_id }}/mentions",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "expansions",
+              "value": "article.cover_media,article.media_entities,attachments.media_keys,attachments.media_source_tweet,attachments.poll_ids,author_id,edit_history_tweet_ids,referenced_tweets.id.attachments.media_keys,referenced_tweets.id.author_id"
+            },
+            {
+              "name": "tweet.fields",
+              "value": "attachments,card_uri,entities,id,media_metadata"
+            },
+            {
+              "name": "media.fields",
+              "value": "media_key,preview_image_url,url"
+            },
+            {
+              "name": "since_id",
+              "value": "1990679722146369575"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -256,
+        576
+      ],
+      "id": "134fb7f0-f92b-4a2e-97c4-a945e23d1a12",
+      "name": "Get mentions",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "executeOnce": false,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get, send and update data in Redis\nRedis Key: `n8n:config:x_user_id` \n설명: n8n 워크플로우에서 사용할 나의 X(트위터) User ID를 저장하고 참조하기 위한 식별자입니다.",
+        "operation": "set",
+        "key": "n8n:config:x_user_id",
+        "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Value', ``, 'string') }}",
+        "keyType": "string"
+      },
+      "type": "n8n-nodes-base.redisTool",
+      "typeVersion": 1,
+      "position": [
+        336,
+        288
+      ],
+      "id": "1fe70ff4-9321-41b6-8286-c12162319360",
+      "name": "Redis1",
+      "credentials": {
+        "redis": {
+          "id": "6dCoqI4HLp13DYuL",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get data in Redis.\nRedis Key: `n8n:config:x_user_id` \n설명: n8n 워크플로우에서 사용할 나의 X(트위터) User ID를 저장하고 참조하기 위한 식별자입니다.",
+        "operation": "get",
+        "propertyName": "x_user_id",
+        "key": "n8n:config:x_user_id",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redisTool",
+      "typeVersion": 1,
+      "position": [
+        432,
+        288
+      ],
+      "id": "d48a377c-9875-4d95-8428-36011dd66446",
+      "name": "Redis2",
+      "credentials": {
+        "redis": {
+          "id": "6dCoqI4HLp13DYuL",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "x_user_id",
+        "key": "n8n:config:x_user_id",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -16
+      ],
+      "id": "961f7f7f-6231-431d-9bd5-af047ccd9e7d",
+      "name": "Redis3",
+      "credentials": {
+        "redis": {
+          "id": "6dCoqI4HLp13DYuL",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "x_user_id",
+        "key": "n8n:config:x_user_id",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        576
+      ],
+      "id": "a5027bc5-96af-42c1-8a11-34557db8fa8a",
+      "name": "Redis4",
+      "credentials": {
+        "redis": {
+          "id": "6dCoqI4HLp13DYuL",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qda.p-e.kr:8000/image/face_recognition",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "=data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1120,
+        1072
+      ],
+      "id": "074ad801-babb-451d-9566-88795f0c69d7",
+      "name": "Face Recognition"
+    },
+    {
+      "parameters": {
+        "merge_multipage_tables": true,
+        "returnMode": "content_text"
+      },
+      "type": "n8n-nodes-upstage.documentParsingUpstage",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        896
+      ],
+      "id": "1fd5630f-71ec-44ce-9372-71e598475d78",
+      "name": "Upstage Document Parse",
+      "credentials": {
+        "upstageApi": {
+          "id": "KKoOhTHWBAC6yTp7",
+          "name": "Upstage account 81"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=[OCR_HTML_CONTENT]:\n{{ $json.combined_analysis_text }}\n\\n\\n\n[FACE_BOUNDING_BOXES]:\n{{ $json.any_face_detected }}\n\\n\\n\n[ADDITIONAL PROMPT]:\n{{ $('Loop Over Items3').first().json.text }}\n\\n\\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=당신의 역할은 사용자가 업로드한 문서나 이미지에서 **개인정보(PII) 존재 여부를 판단**하는 것이다.\n\n## 개인정보의 주요 종류\n- 인적사항: 이름, 생년월일, 주민등록번호, 주소, 연락처 등\n- 신체적 정보: 신체에 관한 정보, 진료 기록, 건강 상태 등\n- 사회적 정보: 학력, 경력, 병역, 자격증, 범죄경력 등\n- 재산적 정보: 소득, 재산, 신용 정보, 금융 거래 기록 등\n- 정신적 정보: 종교, 정치적 성향, 사상, 신념, 취미 등\n- 통신정보: 통화 내역, IP 주소, 위치 정보, 전자우편 주소 등\n- 서비스 이용정보: 웹사이트 ID, 비밀번호, 이용 기록 등 \n\n이 워크플로우는 다음 절차로 데이터를 준비한다: \n- 1) 사용자의 입력 파일을 OCR 처리하여 HTML 형태의 문서 콘텐츠를 추출한다. \n- 2) 동일한 파일에서 얼굴 인식 모델로 얼굴 bounding box를 추출한다.    \n\n[FACE_BOUNDING_BOXES]: 값이 존재하면 실제 얼굴 이미지가 포함된 것으로 간주한다.\n\n출력 형식 (반드시 아래 JSON만 출력): \n{\n  \"has_pii\": boolean\n  \"pii_types\": [string],  \n  \"explanation\": string,  \n  \"risk_level\": \"none\" | \"low\" | \"medium\" | \"high\",  \n  \"warning_message\": string \n}\n\n판단 규칙: \n- 이미지에 얼굴이 감지되면 그것만으로도 개인 식별 가능성이 존재한다고 본다. \n- 문서 내 이름, 전화번호, 이메일, 주소, 주민번호 등과 유사한 패턴이 있으면 PII로 분류한다. \n- 당신은 오직 PII 여부를 판단해야 하며, 해석이나 설명을 늘리지 않는다.\n- [중요 처리 규칙] 입력 텍스트의 맨 앞에 있는 @로 시작하는 문자열(예: @username)은 X(트위터) 태그이므로 \nPII 분석 대상에서 제외하고 무시해야한다."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        368,
+        1328
+      ],
+      "id": "14443d17-0d8c-46c2-bf6a-c3e65407b99f",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"has_pii\": true,\n  \"pii_types\": \"string\",\n  \"explanation\": \"string\",\n  \"risk_level\": \"high\",\n  \"warning_message\": \"string\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        1568
+      ],
+      "id": "9ff20f4d-33e4-44e1-8215-b8742d636de0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1488,
+        1056
+      ],
+      "id": "28d709d5-aaae-45ad-a06b-98f35407e104",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst mediaList = items[0].json.includes ? items[0].json.includes.media : [];\n\nreturn mediaList.map(m => {\n  return {\n    json: {\n      redis_key: `n8n:media:${m.media_key}`, \n      media_url: m.url || m.preview_image_url\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        560
+      ],
+      "id": "71dbc45b-4baa-4474-b9c9-785315aa82cc",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $json.redis_key }}",
+        "value": "={{ $json.media_url }}",
+        "keyType": "string",
+        "expire": true,
+        "ttl": 3600
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        128,
+        560
+      ],
+      "id": "28fa1fc2-acf9-46c7-b072-a6da86875eb0",
+      "name": "Redis6",
+      "credentials": {
+        "redis": {
+          "id": "6dCoqI4HLp13DYuL",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const apiData = $('Get mentions').first().json;\n\nconst tweets = (apiData.includes && apiData.includes.tweets) ? apiData.includes.tweets : [];\n\nreturn tweets.map(tweet => ({ json: tweet }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        560
+      ],
+      "id": "926065db-de20-45a4-aeae-e4f0a67fc9ce",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.media_url }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twitterOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        512,
+        1072
+      ],
+      "id": "260e0ce8-d920-4799-b9d3-6dee67ca66ae",
+      "name": "HTTP Request",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "RVj7W1uPLXXpeUPz",
+          "name": "X account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const extractedItems = items.map(item => {\n    const tweet = item.json;\n\n    const mediaKeys = tweet.attachments?.media_keys || []; \n\n    return {\n        json: {\n            author_id: tweet.author_id,\n            tweet_id: tweet.id,\n            text: tweet.text,\n            media_keys: mediaKeys,\n        }\n    };\n});\n\nreturn extractedItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        560
+      ],
+      "id": "8fcc822a-daac-4426-8698-ce496c9bc1ee",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -640,
+        784
+      ],
+      "id": "f5f286c0-1927-464a-bf77-db9d2fc93b87",
+      "name": "Loop Over Items3",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $node['Loop Over Items4'].context[\"done\"] }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        80,
+        1056
+      ],
+      "id": "65f2a2db-fcce-49f9-87a3-875291615da2",
+      "name": "Loop Over Items4"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "media_keys",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        16,
+        784
+      ],
+      "id": "fe290d42-0fbb-49df-96f0-2da5e82d308a",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "media_url",
+        "key": "=n8n:media:{{ $json.media_keys }}",
+        "keyType": "string",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        320,
+        1072
+      ],
+      "id": "2a55aaeb-3b5d-4dd5-8dae-142093770386",
+      "name": "Redis5",
+      "credentials": {
+        "redis": {
+          "id": "6dCoqI4HLp13DYuL",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "92fd972a-d576-4000-adb1-15390652aebd",
+              "name": "face_detected",
+              "value": "={{ $json.bboxes.length > 0  }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1328,
+        1072
+      ],
+      "id": "e6a27fd3-5f26-4999-8d7a-386f9f286dc9",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2b6b2be-0f39-4d6b-993d-7eb35cc3f670",
+              "leftValue": "={{ $json.output.has_pii }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        1328
+      ],
+      "id": "95c11950-f902-4819-a35e-752ed4e238b7",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=PII Detected: {{ $json.output.warning_message }}\n=== \n- author: {{ $('Loop Over Items3').first().json.author_id }}\n- tweet_id: {{ $('Loop Over Items3').first().json.tweet_id }}\n- text: {{ $('Loop Over Items3').first().json.text }}\n===\nPII Type: {{ $json.output.pii_types }}\nNOTE: {{ $json.output.explanation }}\nRISK LEVEL: {{ $json.output.risk_level }}\n\n",
+        "options": {},
+        "embeds": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        1312
+      ],
+      "id": "a664e484-9452-45c2-8761-de6b5cb95403",
+      "name": "Discord",
+      "webhookId": "340d36c1-e08d-40f1-b58f-26c8e7ede23d",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "F3VOilzVF9G8tDF0",
+          "name": "Discord Webhook account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "PII Detection Finished.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        1616
+      ],
+      "id": "80dd0998-a3bc-4b56-be29-c8281d5c4f8f",
+      "name": "Discord1",
+      "webhookId": "29517a25-69f1-4306-aaf0-cbbfc08d4a18",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "F3VOilzVF9G8tDF0",
+          "name": "Discord Webhook account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const allResults = items.map(item => item.json);\n\nlet combinedText = \"\";\nlet overallFaceDetected = false;\n\nfor (const result of allResults) {\n\n    if (result.text) {\n        combinedText += result.text + \" \";\n    }\n    \n    if (result.face_detected === true) {\n        overallFaceDetected = true;\n    }\n}\n\nreturn [{\n    json: {\n        combined_analysis_text: combinedText.trim(),\n        any_face_detected: overallFaceDetected,\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        1328
+      ],
+      "id": "6252255a-8cc5-4bbf-808a-c73c65339d43",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4e0d43ad-76a3-45cc-851f-96c83afeb21e",
+              "leftValue": "={{ $json.media_keys }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -176,
+        800
+      ],
+      "id": "5773d818-9f78-4418-a132-4a950cd7d4dc",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"combined_analysis_text\": \"\",\n  \"any_face_detected\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        1328
+      ],
+      "id": "3b5c4b48-a5d7-4ac8-bb2d-e8a6a70b53de",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1376,
+        528
+      ],
+      "id": "023e14c6-e1a6-494e-aab3-2439ccf966c7",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "vector_store_key",
+          "mode": "list",
+          "cachedResultName": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        256
+      ],
+      "id": "45fc5735-89f2-451b-b018-840f04407cb7",
+      "name": "Insert Data to Store"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "knowledge_base",
+        "toolDescription": "Use this knowledge base to answer questions from the user",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.2,
+      "position": [
+        688,
+        272
+      ],
+      "id": "d1bba515-d26d-4ee6-97e1-4ed9ca18c094",
+      "name": "Query Data Tool"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-upstage.embeddingsUpstageModel",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        528
+      ],
+      "id": "5a02f5c5-e7a8-4b4e-a81a-a4a8aad371ee",
+      "name": "Upstage Embed for Agent",
+      "credentials": {
+        "upstageApi": {
+          "id": "KKoOhTHWBAC6yTp7",
+          "name": "Upstage account 81"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "solar-pro2",
+        "options": {}
+      },
+      "type": "n8n-nodes-upstage.lmChatModelUpstage",
+      "typeVersion": 1,
+      "position": [
+        368,
+        1568
+      ],
+      "id": "43917b49-89dc-44d6-a3de-b5673f9c0a53",
+      "name": "Upstage Solar Chat for Agent1",
+      "credentials": {
+        "upstageApi": {
+          "id": "KKoOhTHWBAC6yTp7",
+          "name": "Upstage account 81"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        1616
+      ],
+      "id": "c3c620ce-07af-45fb-98e1-78a3056c1466",
+      "name": "End"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        720
+      ],
+      "id": "0b3d87cf-fc36-4c3c-9b8c-7948b64f322e",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "const tweet = $('Loop Over Items3').first().json;\nreturn [{\n    json: {\n        text: tweet.text\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        1344
+      ],
+      "id": "5b06cdb4-5d58-4dae-96f0-485bbba74e82",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dbceb085-3053-4291-8a45-9f1ffeceb3ef",
+              "leftValue": "={{ $json.document.mimetype }}",
+              "rightValue": "image",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        -528
+      ],
+      "id": "68d4c171-8c2f-4c71-8a0a-3dcc1ac7f9c0",
+      "name": "If document type is image"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qda.p-e.kr:8000/image/blur",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "bboxes",
+              "value": "={{ JSON.stringify($json.bboxes) }}"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "=image",
+              "inputDataFieldName": "document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -224,
+        -288
+      ],
+      "id": "655d6eb9-7051-42bc-95f6-f59504e6c9f3",
+      "name": "Bounding Box"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -528,
+        -288
+      ],
+      "id": "09dca2ca-c920-435d-a190-5f2002cb9054",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        592,
+        -640
+      ],
+      "id": "464df9d8-6f99-4f80-a6bc-029ba60292dc",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "formDescription": "=탐지 결과: {{ $json.output.has_pii ? \"감지됨\" : \"감지되지 않음\" }} \\n\n탐지된 개인 정보 종류:  {{ $json.output.pii_types }}\\n\n\n<img src=\"data:image/jpeg;base64, {{ $json.data }}\" alt=\"Generated Image\" style=\"max-width: 100%; height: auto; border-radius: 8px;\" />\n\nDEBUG: \n{{  JSON.stringify($json) }}\n\n"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        -640
+      ],
+      "id": "d5052829-6b6a-4006-8aaf-15fed9754459",
+      "name": "O_T",
+      "webhookId": "7bceb7d5-fb57-45dc-b74e-a1153a362ac2"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -288
+      ],
+      "id": "68b815fe-8bbf-4f78-9f48-a9e75a32ebc8",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "showText",
+        "responseText": "="
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        1056,
+        -640
+      ],
+      "id": "bf36c770-02fd-4e67-ae80-5a2da73fe356",
+      "name": "Form",
+      "webhookId": "8ad0f27c-4517-4ba5-9956-2743fde74e3e"
+    },
+    {
+      "parameters": {
+        "formTitle": "Test",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "document",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".JPEG,.JPG,. PNG,. BMP, .PDF, .TIFF, .HEIC, .DOCX, .PPTX, .XLSX, .HWP, .HWPX",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "prompt",
+              "fieldType": "textarea",
+              "placeholder": "추가로 필요한 요구사항을 입력하세요."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -1056,
+        -736
+      ],
+      "id": "446147d1-1191-4e32-b951-47631ca7f3e4",
+      "name": "On form submission",
+      "webhookId": "22e832f3-edb3-4602-95a4-7bff968041e4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://qda.p-e.kr:8000/image/face_recognition",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "=document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -528,
+        -544
+      ],
+      "id": "f87f5ed9-b5f1-4992-a53e-fcf921b501ec",
+      "name": "Face Recognition1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -288,
+        -656
+      ],
+      "id": "77bdd387-332a-4f5e-9396-58cd5b7624e0",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "document",
+        "merge_multipage_tables": true
+      },
+      "type": "n8n-nodes-upstage.documentParsingUpstage",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -768
+      ],
+      "id": "fda87712-3bd8-404b-9b88-5dd035015557",
+      "name": "Upstage Document Parse1",
+      "credentials": {
+        "upstageApi": {
+          "id": "KKoOhTHWBAC6yTp7",
+          "name": "Upstage account 81"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "solar-pro2",
+        "options": {}
+      },
+      "type": "n8n-nodes-upstage.lmChatModelUpstage",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -480
+      ],
+      "id": "fde1d8ce-b3dd-43cf-a463-274d947b32a5",
+      "name": "Upstage Solar Chat for Agent2",
+      "credentials": {
+        "upstageApi": {
+          "id": "KKoOhTHWBAC6yTp7",
+          "name": "Upstage account 81"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=[OCR_HTML_CONTENT]:\n{{ $json.content.html }}\n[FACE_BOUNDING_BOXES]:\n{{ JSON.stringify($json.bboxes) }}\n[ADDITIONAL PROMPT]:\n{{ $('On form submission').item.json.prompt }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=당신의 역할은 사용자가 업로드한 문서나 이미지에서 **개인정보(PII) 존재 여부를 판단**하는 것이다.\n\n이 워크플로우는 다음 절차로 데이터를 준비한다: \n- 1) 사용자의 입력 파일을 OCR 처리하여 HTML 형태의 문서 콘텐츠를 추출한다. \n- 2) 동일한 파일에서 얼굴 인식 모델로 얼굴 bounding box를 추출한다.    \n\n[FACE_BOUNDING_BOXES]: 값이 존재하면 실제 얼굴 이미지가 포함된 것으로 간주한다.\n\n출력 형식 (반드시 아래 JSON만 출력): \n{\n  \"has_pii\": boolean\n  \"pii_types\": [string],  \n  \"explanation\": string,  \n  \"risk_level\": \"none\" | \"low\" | \"medium\" | \"high\",  \n  \"warning_message\": string \n}\n\n판단 규칙: \n- 이미지에 얼굴이 감지되면 그것만으로도 개인 식별 가능성이 존재한다고 본다. \n- 문서 내 이름, 전화번호, 이메일, 주소, 주민번호 등과 유사한 패턴이 있으면 PII로 분류한다. \n- 당신은 오직 PII 여부를 판단해야 하며, 해석이나 설명을 늘리지 않는다."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -80,
+        -656
+      ],
+      "id": "8e6458c3-0485-4ece-aef6-444e4560da88",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"has_pii\": true,\n  \"pii_types\": \"string\",\n  \"explanation\": \"string\",\n  \"risk_level\": \"high\",\n  \"warning_message\": \"string\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        64,
+        -480
+      ],
+      "id": "7e69b632-133c-4721-9fe0-1f651a3b3204",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "content": "# Model 2",
+        "height": 1888,
+        "width": 2976
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        -32
+      ],
+      "id": "d3a2ba07-5ede-40e7-b1cb-3eb110ad4105",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Model 1",
+        "height": 816,
+        "width": 2976,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        -880
+      ],
+      "id": "11615445-3204-4f34-9533-667c2e82e16f",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Redis3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Upstage Solar Chat for Agent": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Redis4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get mentions": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis4": {
+      "main": [
+        [
+          {
+            "node": "Get mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Face Recognition": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upstage Document Parse": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Redis6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis6": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Face Recognition",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upstage Document Parse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items4": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Redis5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis5": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord1": {
+      "main": [
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Insert Data to Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Data to Store": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Data Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upstage Embed for Agent": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Insert Data to Store",
+            "type": "ai_embedding",
+            "index": 0
+          },
+          {
+            "node": "Query Data Tool",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upstage Solar Chat for Agent1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Discord1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "Insert Data to Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If document type is image": {
+      "main": [
+        [
+          {
+            "node": "Face Recognition1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Bounding Box": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Bounding Box",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "O_T",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "O_T": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Upstage Document Parse1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If document type is image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Face Recognition1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upstage Document Parse1": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upstage Solar Chat for Agent2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c9f3915e-4e1e-4e56-941f-7f59c11786ba",
+  "meta": {
+    "instanceId": "3a2f1e493c58813431ee31e1bf0b0578de9e5243b1ae5b510120463672b15c48"
+  },
+  "id": "gW0aQ8Ah170BXpOU",
+  "tags": []
+}
